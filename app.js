@@ -7,7 +7,7 @@
 // - на Render/продакшне — менять на свой адрес бэкенда
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:5000'
-  : 'https://web-production-fe425.up.railway.app';  // тут
+  : 'https://vikimova.github.io/kitsune-play/';  // тут
 
 // ── РАСПИСАНИЕ — редактируется в админ-панели, хранится в localStorage ──
 const DAYS = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
