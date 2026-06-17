@@ -3,13 +3,12 @@
    Главный файл: логика, данные, API
 ════════════════════════════════════════ */
 // Автоматически определяем адрес бэкенда:
-// - на localhost — локальный Flask
-// - на Render/продакшне — меняй на свой адрес бэкенда
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+// адрес бэкенда — автоматически определяется по домену
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:5000'
-  : 'https://kitsune-backend.onrender.com';  // ← ЗАМЕНИТЬ на свой адрес после деплоя
+  : 'https://web-production-fe425.up.railway.app'
 
-// ── РАСПИСАНИЕ — редактируется в админ-панели, хранится в localStorage ──
+// ── РАСПИСАНИЕ — редактируется в админ-панели, хранится в браузере ──
 const DAYS = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
 // Определяем сегодняшний день динамически
 const TODAY = DAYS[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
@@ -32,9 +31,8 @@ const DEFAULT_SCHEDULE = {
   'Вс': [{time:'16:00',id:21,ep:'Сез. 12 · Сер. 1105'},{time:'19:30',id:11061,ep:'Сез. 4 · Сер. 88'},{time:'22:00',id:31964,ep:'Сез. 7 · Сер. 6'}],
 };
 
-// ── ПЛЕЕР — Sibnet (открытый embed, аниме) ──
-// Sibnet позволяет embed без ограничений.
-// В продакшне заменить на Kodik: https://kodik.info (нужна регистрация партнёра)
+// ── ПЛЕЕР — ссылки на стриминговые платформы ──
+// Для полноценного плеера нужен Kodik (kodik.info) — бесплатно по заявке
 // Ссылки на страницы аниме (для кнопок "Смотреть")
 const ANIMEGO_SLUGS = {
   11061: 'ataka-titanov',
@@ -51,7 +49,7 @@ const ANIMEGO_SLUGS = {
   4181:  'ohothik-ohothik',
 };
 
-// AniLibria — русскоязычный стриминг аниме
+// AniLibria — главная платформа с русской озвучкой
 const ANILIBRIA_IDS = {
   11061: 'Ataka-Titanov',
   16498: 'Klinok-Rassekayuschiy-Demonov',
@@ -69,7 +67,7 @@ const ANILIBRIA_IDS = {
 
 function getPlayerUrl(a) {
   if (a.trailer_url) return a.trailer_url;
-  // AniLibria embed player
+  // ссылка на страницу аниме на AniLibria
   const slug = ANILIBRIA_IDS[a.id];
   if (slug) {
     return `https://www.anilibria.tv/release/${slug}.html`;
@@ -236,39 +234,38 @@ function loadLocal() {
 // ════════════════════════════════════════
 async function init() {
   restoreSession();
-  loadLocal();      // загружаем сохранённые данные из браузера
+  loadLocal();      // загружаем данные сохранённые ранее
   updateAuthUI();
   updateProfileStats(); // сразу обновляем счётчики из localStorage
 
   // Инициализируем расписание
   if (!getSchedule()) saveSchedule(DEFAULT_SCHEDULE);
 
-  // Сначала показываем fallback пока грузится сервер
+  // показываем резервные данные пока грузится сервер
   updateHeroStats();
   buildAllFilters();
   renderHome();
 
-  // Подключаемся к бэкенду (таймаут 5 сек)
+  // пробуем подключиться к серверу
   try {
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 5000);
+    const timer = setTimeout(() => ctrl.abort(), 15000); // таймаут 15 сек — Railway просыпается до 30 сек
     const r = await fetch(API_BASE + '/api', {signal: ctrl.signal});
     clearTimeout(timer);
     if (r.ok) {
       state.backendOnline = true;
       setBanner('🟢 Подключено к серверу', 'success');
-      await loadFromBackend();      // грузим аниме с нашего сервера (русский)
+      await loadFromBackend();      // загружаем аниме с сервера (на русском)
       if (state.user) await syncUserData();
       updateHeroStats(); buildAllFilters(); renderHome();
       return;
     }
   } catch(e) {
-    console.warn('Сервер недоступен:', e.message);
+    // сервер не ответил — работаем без него
   }
 
-  // Сервер недоступен — используем резервные данные (без Jikan, только fallback)
+  // Сервер недоступен — тихо работаем с резервными данными
   state.backendOnline = false;
-  setBanner('⚠️ Сервер недоступен — данные могут быть неактуальны', 'warn');
   updateHeroStats(); buildAllFilters(); renderHome();
 }
 
@@ -295,7 +292,7 @@ async function loadFromBackend() {
     }
   } catch(e) {
     console.warn('Ошибка загрузки аниме:', e.message);
-    // Оставляем fallback данные, не грузим Jikan
+    // используем резервные данные
   }
 }
 
