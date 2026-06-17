@@ -4,10 +4,10 @@
 ════════════════════════════════════════ */
 // Автоматически определяем адрес бэкенда:
 // - на localhost — локальный Flask
-// - на Render/продакшне — менять на свой адрес бэкенда
+// - на Render/продакшне — меняй на свой адрес бэкенда
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:5000'
-  : 'https://vikimova.github.io/kitsune-play/';  // тут
+  : 'https://kitsune-backend.onrender.com';  // ← ЗАМЕНИТЬ на свой адрес после деплоя
 
 // ── РАСПИСАНИЕ — редактируется в админ-панели, хранится в localStorage ──
 const DAYS = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
@@ -243,30 +243,33 @@ async function init() {
   // Инициализируем расписание
   if (!getSchedule()) saveSchedule(DEFAULT_SCHEDULE);
 
-  // Сразу показываем fallback данные — сайт не пустой пока грузится API
+  // Сначала показываем fallback пока грузится сервер
   updateHeroStats();
   buildAllFilters();
   renderHome();
 
-  // Проверяем бэкенд с таймаутом 3 сек
+  // Подключаемся к бэкенду (таймаут 5 сек)
   try {
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 3000);
+    const timer = setTimeout(() => ctrl.abort(), 5000);
     const r = await fetch(API_BASE + '/api', {signal: ctrl.signal});
     clearTimeout(timer);
     if (r.ok) {
       state.backendOnline = true;
       setBanner('🟢 Подключено к серверу', 'success');
-      await loadFromBackend();
+      await loadFromBackend();      // грузим аниме с нашего сервера (русский)
       if (state.user) await syncUserData();
       updateHeroStats(); buildAllFilters(); renderHome();
       return;
     }
-  } catch {}
+  } catch(e) {
+    console.warn('Сервер недоступен:', e.message);
+  }
 
+  // Сервер недоступен — используем резервные данные (без Jikan, только fallback)
   state.backendOnline = false;
-  // Пробуем Jikan в фоне
-  loadFromJikan();
+  setBanner('⚠️ Сервер недоступен — данные могут быть неактуальны', 'warn');
+  updateHeroStats(); buildAllFilters(); renderHome();
 }
 
 function setBanner(msg, type) {
@@ -284,10 +287,16 @@ function setBanner(msg, type) {
 // ════════════════════════════════════════
 async function loadFromBackend() {
   try {
-    const data = await api.get('/api/anime?per_page=100&sort=popular');
-    state.db = data.items.map(normalizeAnime);
-    state.usingBackend = true;
-  } catch { await loadFromJikan(); }
+    // Грузим все аниме с сервера — они уже на русском
+    const data = await api.get('/api/anime?per_page=200&sort=popular');
+    if (data.items && data.items.length > 0) {
+      state.db = data.items.map(normalizeAnime);
+      state.usingBackend = true;
+    }
+  } catch(e) {
+    console.warn('Ошибка загрузки аниме:', e.message);
+    // Оставляем fallback данные, не грузим Jikan
+  }
 }
 
 function normalizeAnime(a) {
@@ -673,7 +682,7 @@ function renderSeasons(a) {
   if (!headerEl || !gridEl) return;
 
   if (seasons.length > 1) {
-    // показываем выбор сезона 
+    // ── ШАГ 1: показываем выбор сезона ──
     // (эпизоды появятся только после выбора сезона)
     headerEl.innerHTML = '<div style="font-size:15px;font-weight:600;margin-bottom:12px">Выберите сезон</div>';
 
@@ -1133,7 +1142,7 @@ function updateProfileStats() {
   document.getElementById('ps-watching').textContent = all.filter(s=>s==='watching').length;
   document.getElementById('ps-planned').textContent  = all.filter(s=>s==='planned').length;
 
-  // Все 6 типов закладок
+  // Все 6 типов закладок под ником
   const LABELS = {watching:'Смотрю',planned:'В планах',watched:'Просмотрено',dropped:'Брошено',hold:'Отложено',fav:'Избранное'};
   const ICONS  = {watching:'ti-player-play',planned:'ti-clock',watched:'ti-circle-check',dropped:'ti-x',hold:'ti-player-pause',fav:'ti-heart'};
   const allStatsEl = document.getElementById('profile-all-stats');
@@ -1482,7 +1491,22 @@ function removeSchedEntry(day,idx) {
 // ════════════════════════════════════════
 // МОДАЛКИ / ТОСТ
 // ════════════════════════════════════════
-function openModal(id){document.getElementById(id).classList.add('open');}
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  // Очищаем поля авторизации при каждом открытии
+  if (id === 'auth-modal') {
+    ['login-username','login-password','reg-username','reg-email','reg-password'].forEach(function(f) {
+      const el = document.getElementById(f);
+      if (el) el.value = '';
+    });
+    const le = document.getElementById('login-error');
+    const re = document.getElementById('reg-error');
+    if (le) le.style.display = 'none';
+    if (re) re.style.display = 'none';
+    // Показываем форму входа (не регистрации)
+    showLogin();
+  }
+}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));});
 
