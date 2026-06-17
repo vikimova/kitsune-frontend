@@ -1,4 +1,4 @@
-/* ── VARIABLES ── */
+/* ── ПЕРЕМЕННЫЕ ЦВЕТОВ И РАЗМЕРОВ ── */
 :root {
   --primary: #FF6B6B;
   --primary-dark: #e85555;
@@ -17,7 +17,7 @@
   --radius: 10px;
 }
 
-/* ── RESET ── */
+/* ── СБРОС СТИЛЕЙ БРАУЗЕРА ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
@@ -35,12 +35,12 @@ input, select, textarea { font-family: inherit; }
 ::-webkit-scrollbar-track { background: var(--surface); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-/* ── PAGE SYSTEM ── */
+/* ── СИСТЕМА СТРАНИЦ — показываем только активную ── */
 .page { display: none; min-height: calc(100vh - 58px); }
 .page.active { display: block; }
 
 /* ════════════════════════════════
-   NAV
+   НАВИГАЦИОННАЯ ПАНЕЛЬ
 ════════════════════════════════ */
 .nav {
   position: sticky; top: 0; z-index: 200;
@@ -71,7 +71,7 @@ input, select, textarea { font-family: inherit; }
 .nav-link:hover { color: var(--text); background: rgba(255,255,255,.05); }
 .nav-link.active { color: var(--text); background: rgba(255,107,107,.12); }
 
-/* search */
+/* поиск в шапке */
 .search-wrap {
   flex: 1; max-width: 360px; margin: 0 auto;
   position: relative;
@@ -125,7 +125,7 @@ input, select, textarea { font-family: inherit; }
 .nav-right { display: flex; gap: 8px; align-items: center; margin-left: auto; flex-shrink: 0; }
 
 /* ════════════════════════════════
-   BUTTONS
+   КНОПКИ
 ════════════════════════════════ */
 .btn {
   border-radius: 8px; font-size: 13px; font-weight: 500;
@@ -153,7 +153,7 @@ input, select, textarea { font-family: inherit; }
 .btn-danger:hover { background: rgba(255,107,107,.25); }
 
 /* ════════════════════════════════
-   HOME PAGE
+   ГЛАВНАЯ СТРАНИЦА
 ════════════════════════════════ */
 .hero {
   position: relative; overflow: hidden;
@@ -199,7 +199,7 @@ input, select, textarea { font-family: inherit; }
 }
 .hero-stat-l { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-/* section */
+/* секция контента */
 .section { padding: 36px 24px; max-width: 1400px; margin: 0 auto; }
 .section + .section { padding-top: 0; }
 .section-head {
@@ -213,7 +213,7 @@ input, select, textarea { font-family: inherit; }
 }
 .section-more:hover { opacity: .8; }
 
-/* chips */
+/* теги-фильтры */
 .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
 .chip {
   background: var(--surface); border: 1px solid var(--border);
@@ -225,7 +225,7 @@ input, select, textarea { font-family: inherit; }
 .chip.active { background: rgba(255,107,107,.15); border-color: var(--primary); color: var(--primary); }
 
 /* ════════════════════════════════
-   ANIME CARDS
+   КАРТОЧКИ АНИМЕ
 ════════════════════════════════ */
 .grid {
   display: grid;
@@ -241,6 +241,9 @@ input, select, textarea { font-family: inherit; }
   transform: translateY(-4px);
   border-color: rgba(255,107,107,.4);
   box-shadow: 0 10px 28px rgba(0,0,0,.35);
+}
+.anime-card > [style*="cursor:pointer"] {
+  display: block;
 }
 .card-poster {
   width: 100%; aspect-ratio: 2/3;
@@ -295,7 +298,7 @@ input, select, textarea { font-family: inherit; }
 .card-btn:hover { border-color: var(--secondary); color: var(--secondary); }
 .card-btn.active { background: rgba(78,205,196,.12); border-color: var(--secondary); color: var(--secondary); }
 
-/* skeleton card */
+/* карточка-заглушка пока грузятся данные */
 .skeleton-card { background: var(--card-bg); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
 .skeleton-poster { width: 100%; aspect-ratio: 2/3; background: linear-gradient(90deg, var(--surface) 25%, #1e2d40 50%, var(--surface) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
 .skeleton-body { padding: 10px 12px 12px; }
@@ -304,7 +307,7 @@ input, select, textarea { font-family: inherit; }
 .skeleton-line.w50 { width: 50%; }
 
 /* ════════════════════════════════
-   SCHEDULE
+   РАСПИСАНИЕ
 ════════════════════════════════ */
 .sched-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
 .sched-days { display: flex; border-bottom: 1px solid var(--border); overflow-x: auto; }
@@ -349,7 +352,7 @@ input, select, textarea { font-family: inherit; }
 .sched-bell:hover, .sched-bell.on { color: var(--primary); }
 
 /* ════════════════════════════════
-   CATALOG PAGE
+   СТРАНИЦА КАТАЛОГА
 ════════════════════════════════ */
 .catalog-layout { display: flex; gap: 20px; padding: 24px; max-width: 1400px; margin: 0 auto; }
 .filters-panel {
@@ -399,7 +402,7 @@ input, select, textarea { font-family: inherit; }
 .page-btn:disabled { opacity: .35; cursor: not-allowed; pointer-events: none; }
 
 /* ════════════════════════════════
-   DETAIL PAGE
+   СТРАНИЦА АНИМЕ
 ════════════════════════════════ */
 .detail-back {
   padding: 16px 24px 0;
@@ -446,7 +449,7 @@ input, select, textarea { font-family: inherit; }
 .detail-desc { font-size: 14px; line-height: 1.78; color: var(--text-muted); margin-top: 18px; max-width: 620px; }
 .detail-actions { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
 
-/* PLAYER */
+/* ПЛЕЕР */
 .detail-body { padding: 24px; max-width: 960px; margin: 0 auto; }
 .player-section { margin-bottom: 28px; }
 .player-header {
@@ -498,7 +501,7 @@ input, select, textarea { font-family: inherit; }
 .ep-chip.watched { border-color: var(--secondary); color: var(--secondary); background: rgba(78,205,196,.08); }
 .ep-more { font-size: 12px; color: var(--text-muted); padding: 6px 0; display: flex; align-items: center; }
 
-/* sidebar */
+/* боковая панель */
 .detail-grid { display: grid; grid-template-columns: 1fr 270px; gap: 20px; }
 .sidebar-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
 .sidebar-title { font-size: 13px; font-weight: 600; margin-bottom: 12px; color: var(--text); }
@@ -515,7 +518,7 @@ input, select, textarea { font-family: inherit; }
 .stream-lang { font-size: 11px; color: var(--text-muted); }
 .stream-ext { font-size: 13px; color: var(--text-dim); }
 
-/* user rating */
+/* оценка пользователя */
 .ur-label { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
 .ur-stars { display: flex; gap: 3px; margin-bottom: 10px; flex-wrap: wrap; }
 .ur-star { font-size: 20px; color: var(--text-dim); cursor: pointer; transition: color .1s; user-select: none; }
@@ -532,7 +535,7 @@ input, select, textarea { font-family: inherit; }
 .coll-opt.active { background: rgba(255,107,107,.15); border-color: var(--primary); color: var(--primary); }
 
 /* ════════════════════════════════
-   PROFILE PAGE
+   СТРАНИЦА ПРОФИЛЯ
 ════════════════════════════════ */
 .profile-layout { display: flex; gap: 20px; padding: 24px; max-width: 1200px; margin: 0 auto; flex-wrap: wrap; }
 .profile-sidebar { width: 240px; flex-shrink: 0; }
@@ -568,7 +571,7 @@ input, select, textarea { font-family: inherit; }
 .coll-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
 
 /* ════════════════════════════════
-   ADMIN PAGE
+   АДМИН-ПАНЕЛЬ
 ════════════════════════════════ */
 .admin-layout { display: flex; gap: 20px; padding: 24px; max-width: 1200px; margin: 0 auto; }
 .admin-sidebar {
@@ -607,7 +610,7 @@ input, select, textarea { font-family: inherit; }
 .tag-ongoing { background: rgba(78,205,196,.15); color: var(--secondary); }
 .tag-finished { background: rgba(155,127,244,.15); color: var(--purple); }
 
-/* forms */
+/* формы ввода */
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
 .form-label { font-size: 12px; font-weight: 500; color: var(--text-muted); display: block; margin-bottom: 6px; }
 .form-input, .form-select, .form-textarea {
@@ -622,7 +625,7 @@ input, select, textarea { font-family: inherit; }
 .form-card-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; }
 
 /* ════════════════════════════════
-   MODALS
+   МОДАЛЬНЫЕ ОКНА
 ════════════════════════════════ */
 .modal-overlay {
   display: none; position: fixed; inset: 0; z-index: 400;
@@ -659,7 +662,7 @@ input, select, textarea { font-family: inherit; }
 .demo-hint b { color: var(--secondary); }
 
 /* ════════════════════════════════
-   TOAST
+   ВСПЛЫВАЮЩИЕ УВЕДОМЛЕНИЯ
 ════════════════════════════════ */
 .toast {
   position: fixed; bottom: 24px; right: 24px; z-index: 500;
@@ -676,7 +679,7 @@ input, select, textarea { font-family: inherit; }
 .toast-icon { font-size: 16px; flex-shrink: 0; }
 
 /* ════════════════════════════════
-   EMPTY STATE
+   ПУСТОЕ СОСТОЯНИЕ — когда нет данных
 ════════════════════════════════ */
 .empty-state { text-align: center; padding: 56px 24px; color: var(--text-muted); }
 .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; color: var(--text-dim); }
@@ -684,7 +687,7 @@ input, select, textarea { font-family: inherit; }
 .empty-state p { font-size: 14px; }
 
 /* ════════════════════════════════
-   LOADING SPINNER
+   ИНДИКАТОР ЗАГРУЗКИ
 ════════════════════════════════ */
 .spinner-wrap { display: flex; justify-content: center; padding: 40px; }
 .spinner {
@@ -697,7 +700,7 @@ input, select, textarea { font-family: inherit; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ════════════════════════════════
-   RESPONSIVE
+   АДАПТИВНОСТЬ — стили для мобильных
 ════════════════════════════════ */
 @media (max-width: 900px) {
   .detail-grid { grid-template-columns: 1fr; }
@@ -725,10 +728,20 @@ input, select, textarea { font-family: inherit; }
   .hero h1 { font-size: 24px; }
 }
 
-/* api loading state */
+/* баннер статуса подключения к серверу */
 .api-banner {
   background: rgba(78,205,196,.08); border-bottom: 1px solid rgba(78,205,196,.2);
   padding: 10px 24px; font-size: 13px; color: var(--secondary);
   display: flex; align-items: center; gap: 8px;
 }
 .api-spinner { width: 14px; height: 14px; border: 2px solid rgba(78,205,196,.3); border-top-color: var(--secondary); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
+
+/* ── МЕНЮ ДОБАВЛЕНИЯ В ЗАКЛАДКИ ── */
+.bm-opt {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 16px; font-size: 13px; font-weight: 500;
+  color: var(--text-muted); cursor: pointer; transition: all .15s;
+}
+.bm-opt:hover { background: rgba(255,255,255,.05); color: var(--text); }
+.bm-opt i { font-size: 16px; width: 18px; }
+.bm-opt.active { color: var(--secondary); }
